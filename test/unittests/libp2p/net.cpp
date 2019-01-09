@@ -281,6 +281,17 @@ public:
     concurrent_queue<bytes> packetsReceived;
 };
 
+struct TestNodeTableEventHandler : NodeTableEventHandler
+{
+    void processEvent(NodeID const& _n, NodeTableEventType const& _e) override
+    {
+        if (_e == NodeEntryScheduledForEviction)
+            scheduledForEviction.push(_n);
+    }
+
+    concurrent_queue<NodeID> scheduledForEviction;
+};
+
 BOOST_AUTO_TEST_CASE(isIPAddressType)
 {
     string wildcard = "0.0.0.0";
@@ -442,7 +453,15 @@ BOOST_AUTO_TEST_CASE(noteActiveNodeEvictsTheNodeWhenBucketIsFull)
     TestNodeTableHost nodeTableHost(512);
     int const bucketIndex = nodeTableHost.populateUntilBucketSize(16);
     BOOST_REQUIRE(bucketIndex >= 0);
+
+    unique_ptr<TestNodeTableEventHandler> eventHandler(new TestNodeTableEventHandler);
+    concurrent_queue<NodeID>& evictEvents = eventHandler->scheduledForEviction;
+
+    auto& nodeTable = nodeTableHost.nodeTable;
+    nodeTable->setEventHandler(eventHandler.release());
+
     nodeTableHost.start();
+    nodeTableHost.processEvents({});
 
     // generate new address for the same bucket
     NodeID newNodeId;
@@ -452,7 +471,6 @@ BOOST_AUTO_TEST_CASE(noteActiveNodeEvictsTheNodeWhenBucketIsFull)
         newNodeId = k.pub();
     } while (NodeTable::distance(nodeTableHost.m_alias.pub(), newNodeId) != bucketIndex + 1);
 
-    auto& nodeTable = nodeTableHost.nodeTable;
     auto const& nodeBucketArray = nodeTable->m_buckets;
     auto const& nodes = nodeBucketArray[bucketIndex].nodes;
     auto leastRecentlySeenNode = nodes.front().lock();
@@ -461,8 +479,8 @@ BOOST_AUTO_TEST_CASE(noteActiveNodeEvictsTheNodeWhenBucketIsFull)
         Node(newNodeId, NodeIPEndpoint(bi::address::from_string("127.0.0.1"), 30000, 30000)),
         NodeTable::Known);
 
-    // wait for PING to be sent out
-    this_thread::sleep_for(std::chrono::milliseconds(100));
+    // wait for eviction
+    evictEvents.pop();
 
     // the bucket is still max size
     BOOST_CHECK_EQUAL(nodes.size(), 16);
@@ -640,17 +658,6 @@ BOOST_AUTO_TEST_CASE(pingTimeout)
     sentPing = nodeTable->m_sentPings.find(nodePubKey);
     BOOST_CHECK(sentPing == nodeTable->m_sentPings.end());
 }
-
-struct TestNodeTableEventHandler : NodeTableEventHandler
-{
-    void processEvent(NodeID const& _n, NodeTableEventType const& _e) override
-    {
-        if (_e == NodeEntryScheduledForEviction)
-            scheduledForEviction.push(_n);
-    }
-
-    concurrent_queue<NodeID> scheduledForEviction;
-};
 
 BOOST_AUTO_TEST_CASE(evictionWithOldNodeAnswering)
 {
