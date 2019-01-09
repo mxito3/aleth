@@ -44,7 +44,8 @@ struct NodeEntry: public Node
 enum NodeTableEventType
 {
     NodeEntryAdded,
-    NodeEntryDropped
+    NodeEntryDropped,
+    NodeEntryScheduledForEviction
 };
 
 class NodeTable;
