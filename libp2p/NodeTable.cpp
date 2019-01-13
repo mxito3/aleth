@@ -126,6 +126,12 @@ bool NodeTable::addNode(Node const& _node, NodeRelation _relation)
         return false;
     }
 
+    if (!isAllowedEndpoint(_node.endpoint))
+    {
+        LOG(m_logger) << "Skip adding node (" << _node.id << ") with unallowed endpoint (" << _node.endpoint << ") to node table";
+        return false;
+    }
+
     auto nodeEntry = make_shared<NodeEntry>(m_hostNodeID, _node.id, _node.endpoint);
     DEV_GUARDED(x_nodes) { m_allNodes[_node.id] = nodeEntry; }
     LOG(m_logger) << "Pending node " << _node.id << "@" << _node.endpoint;
