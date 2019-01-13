@@ -174,6 +174,7 @@ struct TestNodeTable: public NodeTable
     using NodeTable::m_socket;
     using NodeTable::noteActiveNode;
     using NodeTable::setRequestTimeToLive;
+    using NodeTable::m_allowLocalDiscovery;
 };
 
 /**
@@ -794,6 +795,40 @@ BOOST_AUTO_TEST_CASE(evictionWithOldNodeDropped)
     BOOST_CHECK(newNode != nodeTable->m_allNodes.end());
     BOOST_CHECK(newNode->second->lastPongReceivedTime > 0);
     BOOST_CHECK(nodes.back().lock()->id == newNodeId);
+}
+
+BOOST_AUTO_TEST_CASE(pingFromLocalhost)
+{
+    TestNodeTableHost nodeTableHost(512);
+    nodeTableHost.start();
+    auto& nodeTable = nodeTableHost.nodeTable;
+
+    size_t expectedNodeCount = 0;
+    BOOST_REQUIRE(nodeTable->count() == expectedNodeCount);
+
+    // Need to disable local discovery otherwise node table will allow
+    // nodes with localhost IPs to be added
+    nodeTable->m_allowLocalDiscovery = false;
+
+    // Ping from localhost and verify node isn't added to node table
+    TestUDPSocketHost nodeSocketHost{ 30500 };
+    nodeSocketHost.start();
+    auto nodePort = nodeSocketHost.port;
+    auto nodeEndpoint = NodeIPEndpoint{ bi::address::from_string("127.0.0.1"), nodePort, nodePort };
+
+    PingNode ping(nodeEndpoint, nodeTable->m_hostNodeEndpoint);
+    ping.sign(KeyPair::create().secret());
+    
+    nodeSocketHost.socket->send(ping);
+    
+    // Wait for the node table to receive and process the ping
+    nodeTable->packetsReceived.pop(chrono::milliseconds(5000));
+
+    // Verify the node wasn't added to the node table
+    BOOST_REQUIRE(nodeTable->count() == expectedNodeCount);
+
+    // Verify that the node table doesn't respond with a pong
+    BOOST_REQUIRE_THROW(nodeSocketHost.packetsReceived.pop(chrono::milliseconds(5000)), WaitTimeout);
 }
 
 BOOST_AUTO_TEST_CASE(addSelf)
