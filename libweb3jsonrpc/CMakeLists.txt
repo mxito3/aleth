@@ -35,6 +35,7 @@ set(sources
     Web3Face.h
     WhisperFace.h
 )
+include_directories("../permissionController")
 
 if(WIN32)
     list(APPEND sources WinPipeServer.cpp WinPipeServer.h)

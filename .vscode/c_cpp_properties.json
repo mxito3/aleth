@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/usr/include/**",
+                "${workspaceFolder}/aleth/**",
+                "${workspaceFolder}/libwe3jsonrpc/**",
+                "${workspaceFolder}/libdevcore/**",
+                "/home/yapie/.hunter/_Base/c4cfcc0/ae0130f/ef3c3eb/Install/include",
+                "${workspaceFolder}/permissionController/**"
+
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "${default}"
+        }
+    ],
+    "version": 4
+}

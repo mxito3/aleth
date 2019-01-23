@@ -79,3 +79,8 @@ doc/html
 node_modules/
 
 dependency_graph.svg
+
+
+private/testData/ 
+private/testData1/
+ipc/venv/

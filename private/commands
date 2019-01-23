@@ -1,0 +1,39 @@
+打开： 
+    cd ~/github/aleth/private && aleth --config ./config.json --private "testChain" -d ./testData --db-path ./testData -t 2 
+
+启动rpc服务：
+
+    cd ~/github/aleth/scripts && python3 jsonrpcproxy.py /home/yapie/github/aleth/private/testData/geth.ipc
+
+连接：
+    geth attach /home/yapie/github/aleth/private/testData/geth.ipc
+
+区块浏览器：
+    cd /home/yapie/github/explorer && npm start
+
+
+
+
+节点二：
+    cd ~/github/aleth/private && aleth --config ./config.json --private "testChain" -d ./testData1 --db-path ./testData1 -t 1 --listen 9999
+    
+    geth attach /home/yapie/github/aleth/private/testData1/geth.ipc
+
+
+    cd ~/github/aleth/scripts && python3 jsonrpcproxy.py /home/yapie/github/aleth/private/testData1/geth.ipc 9999
+
+
+    admin.addPeer("enode://478260f34787bfe1e69ef21d0494cdd91310c207c7eea5886cc19e8df3421d9726c74d5e685f37dabf04156143efee172b9ac12add014c8bac841d0acd091f6c@152.0.0.116:9999")
+
+
+
+common:
+    miner.setEtherbase(eth.accounts[0])
+
+    eth.blockNumber
+
+    admin.nodeInfo.enode
+
+    admin.peers
+
+    admin.addPeer("enode://478260f34787bfe1e69ef21d0494cdd91310c207c7eea5886cc19e8df3421d9726c74d5e685f37dabf04156143efee172b9ac12add014c8bac841d0acd091f6c@152.0.0.116:30303")

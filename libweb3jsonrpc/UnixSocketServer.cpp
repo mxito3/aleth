@@ -28,7 +28,7 @@ along with cpp-ethereum.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdevcore/Guards.h>
 #include <libdevcore/FileSystem.h>
 #include <boost/filesystem/path.hpp>
-
+#include "iostream"
 // "Mac OS X does not support the flag MSG_NOSIGNAL but we have an equivalent."
 // See http://lists.apple.com/archives/macnetworkprog/2002/Dec/msg00091.html
 #if defined(__APPLE__)
@@ -109,6 +109,7 @@ void UnixDomainSocketServer::Listen()
 	while (m_running)
 	{
 		int connection = accept(m_socket, (sockaddr*) &(m_address), &addressLen);
+		std::cout<<"UnixDomainSocketServer::Listen  request come "<<std::endl;
 		if (connection > 0)
 		{
 			DEV_GUARDED(x_sockets)
@@ -133,6 +134,7 @@ void UnixDomainSocketServer::CloseConnection(int _socket)
 
 size_t UnixDomainSocketServer::Write(int _connection, string const& _data)
 {
+	std::cout<<"UnixDomainSocketServer::Write"<<std::endl;
 	ssize_t r = send(_connection, _data.data(), _data.size(), MSG_NOSIGNAL);
 	if (r < 0)
 		return 0;
@@ -141,6 +143,7 @@ size_t UnixDomainSocketServer::Write(int _connection, string const& _data)
 
 size_t UnixDomainSocketServer::Read(int _connection, void* _data, size_t _size)
 {
+	std::cout<<"UnixDomainSocketServer::Read"<<endl;
 	ssize_t r = read(_connection, _data, _size);
 	if (r < 0)
 		return 0;

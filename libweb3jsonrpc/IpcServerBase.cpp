@@ -24,6 +24,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <string>
+
 #include <libdevcore/Guards.h>
 #include <libdevcore/Log.h>
 
@@ -37,7 +38,9 @@ template <class S> IpcServerBase<S>::IpcServerBase(string const& _path):
     m_path(_path)
 {
     clog(VerbosityInfo, "rpc") << "JSON-RPC socket path: " << _path;
+    clog(VerbosityInfo, "hello") << "this is hello " ;
 }
+
 
 template <class S> bool IpcServerBase<S>::StartListening()
 {
@@ -92,6 +95,7 @@ template <class S> bool IpcServerBase<S>::SendResponse(string const& _response, 
 
 template <class S> void IpcServerBase<S>::GenerateResponse(S _connection)
 {
+    std::cout<<"IpcServerBase<S>::GenerateResponse"<<std::endl;
     char buffer[c_bufferSize];
     string request;
     bool escape = false;

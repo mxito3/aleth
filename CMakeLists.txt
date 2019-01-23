@@ -124,6 +124,7 @@ add_subdirectory(libweb3jsonrpc)
 
 add_subdirectory(aleth)
 
+add_subdirectory(permissionController)
 if (TOOLS)
     add_subdirectory(aleth-key)
     add_subdirectory(aleth-vm)
