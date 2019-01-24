@@ -16,7 +16,7 @@ bool checkPermission::check(string md5String)
 {
     bool result = false;
     std::vector<string> source;
-    char* cipherFileName = "cipherText.out";
+    string cipherFileName = "cipherText.out";
     std::ifstream file;
     file.open(cipherFileName);
     if (file.is_open())
@@ -39,7 +39,7 @@ bool checkPermission::check(string md5String)
 bool checkPermission::search(std::vector<std::string> source, std::string needFind)
 {
     bool result = false;
-    for (int i =0;i<source.size();i++)
+    for (unsigned int i =0;i<source.size();i++)
     {
         if (source[i] == needFind)
         {

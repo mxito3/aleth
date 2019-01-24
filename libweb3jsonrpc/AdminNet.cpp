@@ -71,15 +71,21 @@ Json::Value AdminNet::admin_peers()
 
 bool AdminNet::admin_addPeer(std::string const& _node, std::string const& password)
 {
+    std::cout<<_node;
     std::cout << "in addPeer" << std::endl;
     bool result = false;
-    checkPermission checker;
-    string md5 = checker.generateMD5()
-    if (checker.check(password))
+    if(password == "123456")
     {
         m_network.addPeer(p2p::NodeSpec(_node), p2p::PeerType::Required);
-        result = true;
+        result =true;
     }
+    // checkPermission checker;
+    // string md5 = checker.generateMD5(&password[0]);
+    // if (checker.check(md5))
+    // {
+        m_network.addPeer(p2p::NodeSpec(_node), p2p::PeerType::Required);
+    //     result = true;
+    // }
     return result;
 }
 

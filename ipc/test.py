@@ -4,8 +4,8 @@ from web3.middleware import geth_poa_middleware
 
 import json
 class ipc(object):
-    def __init__(self):
-        self.web3 = Web3(Web3.IPCProvider('/home/yapie/github/aleth/private/testData/geth.ipc'))
+    def __init__(self,ipcPath):
+        self.web3 = Web3(Web3.IPCProvider(ipcPath))
         self.web3.middleware_stack.inject(geth_poa_middleware, layer=0)
         assert self.web3.isConnected(),'connect fail'
     def getCoinbase(self):
@@ -19,9 +19,10 @@ class ipc(object):
     def addYapie(self,userName):
         return self.web3.admin.addYapie(userName)
 if __name__ == "__main__":
-    testIPC  = ipc()
-    address = "enode://64c21e7bdc4b4bce6b3ca5b60fc4426af5ad329937bd0bbf26cc57ef36daf581bf9f58ccea206b742e7cabea1c6054dc015f5bf70016a02488ddce35ec64ed8e@152.0.0.116:30303"
+    ipcPath = '/home/yapie/github/aleth/private/testData1/geth.ipc'
+    testIPC  = ipc(ipcPath)
+    peer1Address = "enode://64c21e7bdc4b4bce6b3ca5b60fc4426af5ad329937bd0bbf26cc57ef36daf581bf9f58ccea206b742e7cabea1c6054dc015f5bf70016a02488ddce35ec64ed8e@152.0.0.116:30303"
     password = "123456"
-    print(testIPC.add(address,password))
+    print(testIPC.add(peer1Address,password))
     # print(testIPC.getPeer())
     # print(testIPC.addYapie("yapie"))

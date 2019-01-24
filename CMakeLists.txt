@@ -18,7 +18,8 @@ cable_configure_toolchain(DEFAULT cxx11-pic)
 
 set(ETH_CMAKE_DIR "${CMAKE_CURRENT_LIST_DIR}/cmake" CACHE PATH "The path to the cmake directory")
 list(APPEND CMAKE_MODULE_PATH ${ETH_CMAKE_DIR})
-
+#解决openssl的问题
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # Map current configuration to configurations of imported targets.
 set(CMAKE_MAP_IMPORTED_CONFIG_DEBUG Release)
 set(CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release)
@@ -83,6 +84,9 @@ find_package(libscrypt CONFIG REQUIRED)
 hunter_add_package(ethash)
 find_package(ethash CONFIG REQUIRED)
 
+# hunter_add_package(OpenSSL)
+# find_package(OpenSSL REQUIRED)
+
 include(ProjectSecp256k1)
 include(ProjectLibFF)
 
@@ -104,6 +108,9 @@ endif()
 
 add_subdirectory(evmc)
 
+# hunter_add_package(OpenSSL)
+# find_package(OpenSSL REQUIRED)
+
 #Global include path for all libs.
 include_directories("${CMAKE_SOURCE_DIR}")
 
@@ -124,7 +131,7 @@ add_subdirectory(libweb3jsonrpc)
 
 add_subdirectory(aleth)
 
-add_subdirectory(permissionController)
+# add_subdirectory(permissionController)
 if (TOOLS)
     add_subdirectory(aleth-key)
     add_subdirectory(aleth-vm)

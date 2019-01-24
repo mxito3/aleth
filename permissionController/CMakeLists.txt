@@ -9,8 +9,8 @@ set(CMAKE_FIND_LIBRARY_SUFFIXES ".so;.a")
 
 find_package(OpenSSL REQUIRED)
 
-
-set(sourceFile check.cpp checkPermission.h checkPermission.cpp)
-add_library(checker ${sourceFile})
+set(PROJECT_NAME checker)
+set(sourceFile main.cpp checkPermission.h checkPermission.cpp)
+add_library(${PROJECT_NAME} ${sourceFile})
 # add_executable(${PROJECT_NAME} ${sourceFile})
-target_link_libraries(checker OpenSSL::Crypto)
+target_link_libraries(${PROJECT_NAME} OpenSSL::Crypto)

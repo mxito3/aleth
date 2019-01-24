@@ -84,3 +84,9 @@ dependency_graph.svg
 private/testData/ 
 private/testData1/
 ipc/venv/
+permissionController/CMakeCache.txt
+permissionController/CMakeFiles/
+permissionController/Makefile
+permissionController/checker
+permissionController/cmake_install.cmake
+
